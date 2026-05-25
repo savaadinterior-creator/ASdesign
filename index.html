@@ -546,6 +546,7 @@ section { padding: 80px 0; }
   transition: transform 1s cubic-bezier(0.4,0,0.2,1);
 }
 .proj-hero:hover .proj-hero-img img { transform: scale(1.03); }
+.mobile-project-slider { display: none; }
 .proj-hero-caption {
   display: grid; grid-template-columns: 1fr 1fr;
   border-top: 1px solid var(--line);
@@ -988,7 +989,7 @@ footer {
   .about-stats { flex-direction: row; flex-wrap: wrap; gap: 0; }
   .stat { flex: 1; min-width: 140px; padding: 16px 16px 16px 0; }
   .proj-hero-caption { grid-template-columns: 1fr; gap: 20px; }
-  .projects.pad { padding-bottom: 36px; }
+  .projects.pad { padding-bottom: 18px; }
   .proj-hero-caption-right { border-left: none; padding-left: 0; border-top: 1px solid var(--line); padding-top: 20px; }
   .proj-hero-title { font-size: clamp(1.8rem, 4vw, 3rem); }
   .proj-pair { grid-template-columns: 1fr; }
@@ -1254,7 +1255,7 @@ footer {
   .pad { padding: 56px var(--mobile-gutter); }
   footer { padding: 40px var(--mobile-gutter); }
   .acc-inner { padding-left: 64px; padding-bottom: 38px; }
-  .statement { padding: 42px var(--mobile-gutter) 30px; }
+  .statement { padding: 24px var(--mobile-gutter) 30px; }
   .statement-quote { font-size: clamp(3rem, 13vw, 4.9rem); line-height: 0.95; margin-bottom: 22px; }
   .legal-modal { padding: 12px; align-items: flex-end; }
   .legal-panel { padding: 24px; max-height: 84vh; }
@@ -1316,6 +1317,49 @@ footer {
   .proj-hero-img img {
     object-position: center center;
   }
+  .has-mobile-slider > picture,
+  .has-mobile-slider > img {
+    display: none;
+  }
+  .mobile-project-slider {
+    display: block;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    touch-action: pan-y;
+  }
+  .mobile-project-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.36s ease;
+    will-change: transform;
+  }
+  .mobile-project-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .mobile-project-dots {
+    position: absolute;
+    left: 50%;
+    bottom: 12px;
+    display: flex;
+    gap: 6px;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  .mobile-project-dot {
+    width: 22px;
+    height: 2px;
+    border: 0;
+    padding: 0;
+    background: rgba(247, 246, 243, 0.58);
+    border-radius: 999px;
+  }
+  .mobile-project-dot.active {
+    background: rgba(31, 31, 29, 0.88);
+  }
   .proj-hero-meta,
   .proj-col-desc {
     display: none;
@@ -1328,25 +1372,33 @@ footer {
     padding: 15px 0 0;
     align-items: start;
   }
-  .proj-hero-caption-left,
-  .proj-hero-caption-right {
-    display: contents;
+  .proj-hero-caption-left {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 10px;
+    row-gap: 7px;
+    padding-right: 0;
   }
   .proj-hero-caption-right {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    align-self: end;
+    justify-content: flex-end;
     border: 0;
     padding: 0;
   }
   .proj-hero-num,
   .proj-col-num {
-    margin: 0;
-    font-size: 0.72rem;
-    line-height: 1.2;
+    display: none;
   }
   .proj-hero-mobile-meta {
     display: block;
-    grid-column: 1 / -1;
+    grid-column: 1;
     grid-row: 1;
-    margin: 0 0 0 32px;
+    margin: 0;
     align-self: baseline;
     color: var(--ink-3);
     font-size: 9px;
@@ -1355,17 +1407,19 @@ footer {
     text-transform: uppercase;
   }
   .proj-hero-title {
-    grid-column: 1;
+    grid-column: 1 / -1;
     grid-row: 2;
     margin: 0;
     font-size: 1.46rem;
     line-height: 1.12;
   }
+  .proj-hero-title .mobile-title-indent {
+    display: block;
+    margin-left: 1.32em;
+  }
   .proj-hero-link {
-    grid-column: 2;
-    grid-row: 2;
-    align-self: start;
-    margin: 3px 0 0;
+    align-self: end;
+    margin: 0;
     font-size: 9px;
     line-height: 1.2;
     letter-spacing: 0.16em;
@@ -1392,9 +1446,9 @@ footer {
     grid-row: 2;
   }
   .proj-col-meta {
-    grid-column: 1 / -1;
+    grid-column: 1;
     grid-row: 2;
-    margin: 0 0 0 32px;
+    margin: 0;
     align-self: baseline;
     font-size: 9px;
     line-height: 1.35;
@@ -1577,19 +1631,31 @@ footer {
 
       <!-- Project 01 — full bleed -->
       <div class="proj-hero reveal" onclick="openProject(0)" role="button" tabindex="0" aria-label="View project: Shades of Grey in Historic Lisbon" onkeydown="if(event.key==='Enter')openProject(0)">
-        <div class="proj-hero-img">
+        <div class="proj-hero-img has-mobile-slider">
           <picture>
             <source media="(max-width: 768px)" srcset="public/images/shades-of-grey/01-cover-living-room-mobile.jpg">
             <img src="public/images/shades-of-grey/01-cover-lisbon-upscaled-2026-05-25.png"
               alt="Shades of Grey — historic Lisbon apartment, grey palette and architectural mouldings"
               loading="lazy" onerror="this.style.opacity='0'" />
           </picture>
+          <div class="mobile-project-slider" data-mobile-slider aria-label="Project photos: Shades of Grey in Historic Lisbon">
+            <div class="mobile-project-track">
+              <img class="mobile-project-slide" src="public/images/shades-of-grey/01-cover-living-room-mobile.jpg" alt="Living room with statement chair — Shades of Grey, Lisbon" loading="lazy">
+              <img class="mobile-project-slide" src="public/images/shades-of-grey/02-bedroom-to-study.jpg" alt="View from bedroom to study — Shades of Grey, Lisbon" loading="lazy">
+              <img class="mobile-project-slide" src="public/images/shades-of-grey/04-study-photo.jpg" alt="Study with built-in bookshelves and desk — Shades of Grey, Lisbon" loading="lazy">
+            </div>
+            <div class="mobile-project-dots" aria-hidden="true">
+              <span class="mobile-project-dot active"></span>
+              <span class="mobile-project-dot"></span>
+              <span class="mobile-project-dot"></span>
+            </div>
+          </div>
         </div>
         <div class="proj-hero-caption">
           <div class="proj-hero-caption-left">
             <p class="proj-hero-num">01</p>
             <p class="proj-hero-mobile-meta">Historic apartment renovation · Lisbon</p>
-            <h3 class="proj-hero-title">Shades of Grey<br>in Historic Lisbon</h3>
+            <h3 class="proj-hero-title">Shades of Grey<br><span class="mobile-title-indent">in Historic Lisbon</span></h3>
           </div>
           <div class="proj-hero-caption-right">
             <p class="proj-hero-meta">Historic apartment renovation · Lisbon, Portugal<br><br>A historic apartment designed around grey and muted green tones — built on natural light, old wooden floors, architectural mouldings and carefully selected textures.</p>
@@ -1601,10 +1667,22 @@ footer {
       <!-- Projects 02 & 03 — two columns -->
       <div class="proj-pair">
         <div class="proj-col terracotta-preview reveal" onclick="openProject(1)" role="button" tabindex="0" aria-label="View project: Terracotta Soul" onkeydown="if(event.key==='Enter')openProject(1)">
-          <div class="proj-col-img">
+          <div class="proj-col-img has-mobile-slider">
             <img src="public/images/terracotta-soul/01-cover-open-space.jpg"
               alt="Terracotta Soul — warm Lisbon apartment with terracotta tones and natural textures"
               loading="lazy" onerror="this.style.opacity='0'" />
+            <div class="mobile-project-slider" data-mobile-slider aria-label="Project photos: Terracotta Soul">
+              <div class="mobile-project-track">
+                <img class="mobile-project-slide" src="public/images/terracotta-soul/01-cover-open-space.jpg" alt="Open-plan living area — Terracotta Soul, Lisbon" loading="lazy">
+                <img class="mobile-project-slide" src="public/images/terracotta-soul/02-dining-pendant.jpg" alt="Dining area with pendant light — Terracotta Soul, Lisbon" loading="lazy">
+                <img class="mobile-project-slide" src="public/images/terracotta-soul/03-wooden-partition.jpg" alt="Wooden partition detail — Terracotta Soul, Lisbon" loading="lazy">
+              </div>
+              <div class="mobile-project-dots" aria-hidden="true">
+                <span class="mobile-project-dot active"></span>
+                <span class="mobile-project-dot"></span>
+                <span class="mobile-project-dot"></span>
+              </div>
+            </div>
           </div>
           <p class="proj-col-num">02</p>
           <h3 class="proj-col-title">Terracotta Soul</h3>
@@ -1613,10 +1691,22 @@ footer {
           <span class="proj-col-link">View project</span>
         </div>
         <div class="proj-col braga-preview reveal" onclick="openProject(2)" role="button" tabindex="0" aria-label="View project: Braga Airbnb Heritage" onkeydown="if(event.key==='Enter')openProject(2)">
-          <div class="proj-col-img">
+          <div class="proj-col-img has-mobile-slider">
             <img src="public/images/braga-airbnb-heritage/01-cover-living-room-mirror.jpg"
               alt="Braga Airbnb Heritage — styled rental apartment in historic Braga"
               loading="lazy" onerror="this.style.opacity='0'" />
+            <div class="mobile-project-slider" data-mobile-slider aria-label="Project photos: Braga Airbnb Heritage">
+              <div class="mobile-project-track">
+                <img class="mobile-project-slide" src="public/images/braga-airbnb-heritage/01-cover-living-room-mirror.jpg" alt="Living room with mirror — Braga Airbnb Heritage" loading="lazy">
+                <img class="mobile-project-slide" src="public/images/braga-airbnb-heritage/02-living-room-sofa.jpg" alt="Sofa and living space — Braga Airbnb Heritage" loading="lazy">
+                <img class="mobile-project-slide" src="public/images/braga-airbnb-heritage/03-bedroom-artwork.jpg" alt="Bedroom with artwork — Braga Airbnb Heritage" loading="lazy">
+              </div>
+              <div class="mobile-project-dots" aria-hidden="true">
+                <span class="mobile-project-dot active"></span>
+                <span class="mobile-project-dot"></span>
+                <span class="mobile-project-dot"></span>
+              </div>
+            </div>
           </div>
           <p class="proj-col-num">03</p>
           <h3 class="proj-col-title">Braga Airbnb Heritage</h3>
@@ -1626,7 +1716,7 @@ footer {
         </div>
       </div>
 
-      <p class="projects-note">More projects available on request</p>
+      <p class="projects-note">Full portfolio available on request</p>
       <div class="project-detail" id="projectDetail" aria-live="polite">
         <div class="project-detail-head">
           <div>
@@ -2137,6 +2227,48 @@ footer {
       trackEvent('whatsapp_click', {
         link_text: link.textContent.trim()
       });
+    });
+  });
+
+  document.querySelectorAll('[data-mobile-slider]').forEach(slider => {
+    const track = slider.querySelector('.mobile-project-track');
+    const slides = Array.from(slider.querySelectorAll('.mobile-project-slide'));
+    const dots = Array.from(slider.querySelectorAll('.mobile-project-dot'));
+    if (!track || slides.length < 2) return;
+
+    let index = 0;
+    let startX = 0;
+    let deltaX = 0;
+    let isDragging = false;
+
+    const setSlide = nextIndex => {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      track.style.transform = `translateX(${-index * 100}%)`;
+      dots.forEach((dot, dotIndex) => dot.classList.toggle('active', dotIndex === index));
+    };
+
+    slider.addEventListener('click', event => {
+      event.stopPropagation();
+    });
+
+    slider.addEventListener('touchstart', event => {
+      startX = event.touches[0].clientX;
+      deltaX = 0;
+      isDragging = true;
+    }, { passive: true });
+
+    slider.addEventListener('touchmove', event => {
+      if (!isDragging) return;
+      deltaX = event.touches[0].clientX - startX;
+    }, { passive: true });
+
+    slider.addEventListener('touchend', event => {
+      if (!isDragging) return;
+      event.stopPropagation();
+      if (Math.abs(deltaX) > 36) {
+        setSlide(index + (deltaX < 0 ? 1 : -1));
+      }
+      isDragging = false;
     });
   });
 
