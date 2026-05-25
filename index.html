@@ -513,7 +513,7 @@ section { padding: 80px 0; }
 /* ─── PROJECTS ─── */
 .projects { background: var(--bg); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .projects.pad { padding-bottom: 32px; }
-.projects-head { padding-bottom: 40px; }
+.projects-head { padding-bottom: 22px; }
 .projects-title { font-family: var(--sans); font-weight: 300; font-size: clamp(1.8rem, 2.5vw, 2.8rem); letter-spacing: -0.03em; color: var(--ink); margin-bottom: 16px; }
 .projects-intro { max-width: 520px; font-size: 12px; line-height: 1.85; color: #5E5E58; font-weight: 300; }
 
@@ -1424,7 +1424,7 @@ footer {
   }
   .proj-hero-link {
     align-self: end;
-    margin: 0;
+    margin: 0 0 4px;
     font-size: 9px;
     line-height: 1.2;
     letter-spacing: 0.16em;
@@ -1775,8 +1775,8 @@ footer {
       <div class="svc-list">
 
         <!-- Service 1 -->
-        <details class="accordion" id="acc1" open>
-          <summary class="acc-trigger" aria-expanded="true">
+        <details class="accordion" id="acc1">
+          <summary class="acc-trigger" aria-expanded="false">
             <div class="acc-left">
               <span class="acc-num">01</span>
               <span class="acc-title">Full Interior Design Project</span>
@@ -2354,6 +2354,12 @@ footer {
   window.addEventListener('keydown', event => {
     if (event.key === 'Escape') closeLegalModals();
   });
+
+  const firstServiceAccordion = document.getElementById('acc1');
+  if (firstServiceAccordion && window.matchMedia('(min-width: 769px)').matches) {
+    firstServiceAccordion.open = true;
+    firstServiceAccordion.querySelector('.acc-trigger')?.setAttribute('aria-expanded', 'true');
+  }
 
   document.querySelectorAll('.accordion').forEach(accordion => {
     const trigger = accordion.querySelector('.acc-trigger');
